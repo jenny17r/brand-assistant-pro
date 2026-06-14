@@ -9,38 +9,172 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
+import { Route as DashboardSettingsRouteImport } from './routes/dashboard.settings'
+import { Route as DashboardContentStudioRouteImport } from './routes/dashboard.content-studio'
+import { Route as DashboardCampaignStudioRouteImport } from './routes/dashboard.campaign-studio'
+import { Route as DashboardBrandPersonaRouteImport } from './routes/dashboard.brand-persona'
+import { Route as DashboardAnalyticsRouteImport } from './routes/dashboard.analytics'
 
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardIndexRoute = DashboardIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardContentStudioRoute = DashboardContentStudioRouteImport.update({
+  id: '/content-studio',
+  path: '/content-studio',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardCampaignStudioRoute = DashboardCampaignStudioRouteImport.update({
+  id: '/campaign-studio',
+  path: '/campaign-studio',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardBrandPersonaRoute = DashboardBrandPersonaRouteImport.update({
+  id: '/brand-persona',
+  path: '/brand-persona',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardAnalyticsRoute = DashboardAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => DashboardRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRouteWithChildren
+  '/onboarding': typeof OnboardingRoute
+  '/signup': typeof SignupRoute
+  '/dashboard/analytics': typeof DashboardAnalyticsRoute
+  '/dashboard/brand-persona': typeof DashboardBrandPersonaRoute
+  '/dashboard/campaign-studio': typeof DashboardCampaignStudioRoute
+  '/dashboard/content-studio': typeof DashboardContentStudioRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/onboarding': typeof OnboardingRoute
+  '/signup': typeof SignupRoute
+  '/dashboard/analytics': typeof DashboardAnalyticsRoute
+  '/dashboard/brand-persona': typeof DashboardBrandPersonaRoute
+  '/dashboard/campaign-studio': typeof DashboardCampaignStudioRoute
+  '/dashboard/content-studio': typeof DashboardContentStudioRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard': typeof DashboardIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRouteWithChildren
+  '/onboarding': typeof OnboardingRoute
+  '/signup': typeof SignupRoute
+  '/dashboard/analytics': typeof DashboardAnalyticsRoute
+  '/dashboard/brand-persona': typeof DashboardBrandPersonaRoute
+  '/dashboard/campaign-studio': typeof DashboardCampaignStudioRoute
+  '/dashboard/content-studio': typeof DashboardContentStudioRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/onboarding'
+    | '/signup'
+    | '/dashboard/analytics'
+    | '/dashboard/brand-persona'
+    | '/dashboard/campaign-studio'
+    | '/dashboard/content-studio'
+    | '/dashboard/settings'
+    | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/onboarding'
+    | '/signup'
+    | '/dashboard/analytics'
+    | '/dashboard/brand-persona'
+    | '/dashboard/campaign-studio'
+    | '/dashboard/content-studio'
+    | '/dashboard/settings'
+    | '/dashboard'
+  id:
+    | '__root__'
+    | '/'
+    | '/dashboard'
+    | '/onboarding'
+    | '/signup'
+    | '/dashboard/analytics'
+    | '/dashboard/brand-persona'
+    | '/dashboard/campaign-studio'
+    | '/dashboard/content-studio'
+    | '/dashboard/settings'
+    | '/dashboard/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DashboardRoute: typeof DashboardRouteWithChildren
+  OnboardingRoute: typeof OnboardingRoute
+  SignupRoute: typeof SignupRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +182,79 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/': {
+      id: '/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof DashboardIndexRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/settings': {
+      id: '/dashboard/settings'
+      path: '/settings'
+      fullPath: '/dashboard/settings'
+      preLoaderRoute: typeof DashboardSettingsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/content-studio': {
+      id: '/dashboard/content-studio'
+      path: '/content-studio'
+      fullPath: '/dashboard/content-studio'
+      preLoaderRoute: typeof DashboardContentStudioRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/campaign-studio': {
+      id: '/dashboard/campaign-studio'
+      path: '/campaign-studio'
+      fullPath: '/dashboard/campaign-studio'
+      preLoaderRoute: typeof DashboardCampaignStudioRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/brand-persona': {
+      id: '/dashboard/brand-persona'
+      path: '/brand-persona'
+      fullPath: '/dashboard/brand-persona'
+      preLoaderRoute: typeof DashboardBrandPersonaRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/analytics': {
+      id: '/dashboard/analytics'
+      path: '/analytics'
+      fullPath: '/dashboard/analytics'
+      preLoaderRoute: typeof DashboardAnalyticsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
   }
 }
 
+interface DashboardRouteChildren {
+  DashboardAnalyticsRoute: typeof DashboardAnalyticsRoute
+  DashboardBrandPersonaRoute: typeof DashboardBrandPersonaRoute
+  DashboardCampaignStudioRoute: typeof DashboardCampaignStudioRoute
+  DashboardContentStudioRoute: typeof DashboardContentStudioRoute
+  DashboardSettingsRoute: typeof DashboardSettingsRoute
+  DashboardIndexRoute: typeof DashboardIndexRoute
+}
+
+const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardAnalyticsRoute: DashboardAnalyticsRoute,
+  DashboardBrandPersonaRoute: DashboardBrandPersonaRoute,
+  DashboardCampaignStudioRoute: DashboardCampaignStudioRoute,
+  DashboardContentStudioRoute: DashboardContentStudioRoute,
+  DashboardSettingsRoute: DashboardSettingsRoute,
+  DashboardIndexRoute: DashboardIndexRoute,
+}
+
+const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
+  DashboardRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DashboardRoute: DashboardRouteWithChildren,
+  OnboardingRoute: OnboardingRoute,
+  SignupRoute: SignupRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
