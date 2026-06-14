@@ -257,7 +257,7 @@ function RevenueChart({ data }: { data: { name: string; value: number }[] }) {
             fontSize: 12,
             boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
           }}
-          formatter={(v: number) => fmt(v)}
+          formatter={(v) => fmt(Number(v))}
         />
         <Bar dataKey="value" radius={[6, 6, 0, 0]}>
           {data.map((_, i) => (
