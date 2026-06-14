@@ -16,7 +16,7 @@ const items = [
   { title: "Brand Persona", to: "/dashboard/brand-persona", icon: Palette },
   { title: "Content Studio", to: "/dashboard/content-studio", icon: PenSquare },
   { title: "Campaign Studio", to: "/dashboard/campaign-studio", icon: Megaphone },
-  { title: "Analytics", to: "/dashboard/analytics", icon: BarChart3 },
+  { title: "Business Analytics", to: "/dashboard/analytics", icon: BarChart3 },
   { title: "Settings", to: "/dashboard/settings", icon: Settings },
 ] as const;
 
