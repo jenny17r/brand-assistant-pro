@@ -1,309 +1,326 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-  Cell,
-} from "recharts";
-import {
-  AlertTriangle,
-  Info,
-  Lightbulb,
+  Palette,
+  PenSquare,
+  Megaphone,
+  BarChart3,
+  Sparkles,
   TrendingUp,
-  TrendingDown,
-  Wallet,
-  Receipt,
-  PiggyBank,
-  Percent,
+  Lightbulb,
+  Target,
+  CalendarDays,
+  CheckCircle2,
+  Clock,
+  Upload,
+  FileText,
 } from "lucide-react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { CsvUpload } from "@/components/CsvUpload";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/dashboard/")({
   head: () => ({
     meta: [
-      { title: "Business Analytics — Brand Assistant" },
-      { name: "description", content: "Revenue, profit, alerts and recommendations for your business." },
+      { title: "Dashboard — Brand Assistant" },
+      { name: "description", content: "Manage your brand, campaigns and business analytics from one place." },
     ],
   }),
-  component: DashboardPage,
+  component: DashboardHub,
 });
 
-const fmt = (n: number) => "₹" + n.toLocaleString("en-IN");
+const BUSINESS_NAME = "Acme Electronics";
 
-const revenueData = [
-  { name: "Laptop", value: 500000 },
-  { name: "Monitor", value: 180000 },
-  { name: "Keyboard", value: 30000 },
-  { name: "Mouse", value: 25000 },
-];
-const profitData = [
-  { name: "Laptop", value: 100000 },
-  { name: "Monitor", value: 30000 },
-  { name: "Keyboard", value: 12000 },
-  { name: "Mouse", value: 12500 },
+const quickActions = [
+  {
+    title: "Brand Persona",
+    description: "View and manage your business profile.",
+    cta: "Open Brand Persona",
+    to: "/dashboard/brand-persona",
+    icon: Palette,
+  },
+  {
+    title: "Content Studio",
+    description: "Generate social media posts.",
+    cta: "Generate Content",
+    to: "/dashboard/content-studio",
+    icon: PenSquare,
+  },
+  {
+    title: "Campaign Studio",
+    description: "Create festival campaigns using AI.",
+    cta: "Generate Campaign",
+    to: "/dashboard/campaign-studio",
+    icon: Megaphone,
+  },
+  {
+    title: "Business Analytics",
+    description: "Upload sales data and analyze performance.",
+    cta: "Open Analytics",
+    to: "/dashboard/analytics",
+    icon: BarChart3,
+  },
+] as const;
+
+const activity = [
+  { icon: Palette, title: "Brand Persona generated", time: "2 hours ago" },
+  { icon: Megaphone, title: "Diwali campaign generated", time: "Yesterday, 4:12 PM" },
+  { icon: Upload, title: "Sales report uploaded — sales_oct.csv", time: "2 days ago" },
+  { icon: FileText, title: "Content generated — 5 Instagram posts", time: "4 days ago" },
 ];
 
-const products = [
-  { name: "Laptop", revenue: 500000, profit: 100000, contribution: 68 },
-  { name: "Monitor", revenue: 180000, profit: 30000, contribution: 25 },
-  { name: "Keyboard", revenue: 30000, profit: 12000, contribution: 4 },
-  { name: "Mouse", revenue: 25000, profit: 12500, contribution: 3 },
+const insights = [
+  {
+    icon: TrendingUp,
+    title: "Revenue concentration",
+    body: "Revenue depends heavily on Laptop sales (68% of total).",
+    tone: "warning" as const,
+  },
+  {
+    icon: Target,
+    title: "Healthy profit margin",
+    body: "Profit margin remains above 20% across the catalog.",
+    tone: "success" as const,
+  },
+  {
+    icon: Lightbulb,
+    title: "Growth opportunity",
+    body: "Monitor category shows strong growth potential this quarter.",
+    tone: "info" as const,
+  },
 ];
 
-function DashboardPage() {
+// Days until a fixed mock date relative to "today"
+function daysUntil(month: number, day: number) {
+  const today = new Date();
+  let year = today.getFullYear();
+  const target = new Date(year, month - 1, day);
+  if (target < today) target.setFullYear(year + 1);
+  const ms = target.getTime() - today.setHours(0, 0, 0, 0);
+  return Math.max(0, Math.ceil(ms / (1000 * 60 * 60 * 24)));
+}
+
+const festivals = [
+  { name: "Diwali", month: 11, day: 1, readiness: "ready" as const },
+  { name: "Pongal", month: 1, day: 14, readiness: "draft" as const },
+  { name: "Christmas", month: 12, day: 25, readiness: "not-started" as const },
+];
+
+function DashboardHub() {
+  const today = new Date().toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
   return (
-    <div className="p-6 lg:p-10 space-y-8 max-w-7xl mx-auto">
+    <div className="p-6 lg:p-10 space-y-10 max-w-7xl mx-auto">
+      {/* Header */}
       <header className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Business Analytics</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Analyze revenue, profit, business alerts and recommendations.
+          <h1 className="text-2xl lg:text-3xl font-semibold tracking-tight">
+            Welcome back, {BUSINESS_NAME}
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1.5">
+            Manage your brand, campaigns and business analytics from one place.
           </p>
         </div>
-        <div className="text-xs text-muted-foreground rounded-md border border-border bg-card px-3 py-1.5">
-          Period: Last 30 days
+        <div className="flex items-center gap-2 text-xs text-muted-foreground rounded-md border border-border bg-card px-3 py-1.5">
+          <CalendarDays className="h-3.5 w-3.5" />
+          {today}
         </div>
       </header>
 
-      {/* KPIs */}
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Kpi label="Total Revenue" value={fmt(735000)} icon={Wallet} delta="+12.4%" up />
-        <Kpi label="Total Cost" value={fmt(580500)} icon={Receipt} delta="+8.1%" />
-        <Kpi label="Total Profit" value={fmt(154500)} icon={PiggyBank} delta="+18.6%" up />
-        <Kpi label="Profit Margin" value="21.02%" icon={Percent} delta="+1.8 pts" up />
-      </section>
-
-      {/* Charts */}
-      <section className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <ChartCard title="Revenue by product" subtitle="In ₹ across catalog">
-          <RevenueChart data={revenueData} />
-        </ChartCard>
-        <ChartCard title="Profit by product" subtitle="Net profit per SKU">
-          <RevenueChart data={profitData} />
-        </ChartCard>
-      </section>
-
-      {/* Table */}
-      <section className="rounded-xl border border-border bg-card shadow-sm">
-        <div className="p-5 border-b border-border">
-          <h2 className="text-sm font-semibold">Top products</h2>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Ranked by revenue contribution.
-          </p>
+      {/* Quick Actions */}
+      <section className="space-y-4">
+        <SectionHeading title="Quick actions" subtitle="Jump straight into your most-used tools." />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {quickActions.map((a) => (
+            <div
+              key={a.title}
+              className="group rounded-xl border border-border bg-card shadow-sm p-5 flex flex-col hover:shadow-md transition-shadow"
+            >
+              <div className="h-10 w-10 rounded-lg bg-muted grid place-items-center mb-4">
+                <a.icon className="h-5 w-5 text-foreground" />
+              </div>
+              <h3 className="text-sm font-semibold">{a.title}</h3>
+              <p className="text-xs text-muted-foreground mt-1 flex-1">{a.description}</p>
+              <Button asChild variant="outline" size="sm" className="mt-4 w-full">
+                <Link to={a.to}>{a.cta}</Link>
+              </Button>
+            </div>
+          ))}
         </div>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Product</TableHead>
-              <TableHead className="text-right">Revenue</TableHead>
-              <TableHead className="text-right">Profit</TableHead>
-              <TableHead className="text-right">Contribution</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {products.map((p) => (
-              <TableRow key={p.name}>
-                <TableCell className="font-medium">{p.name}</TableCell>
-                <TableCell className="text-right tabular-nums">{fmt(p.revenue)}</TableCell>
-                <TableCell className="text-right tabular-nums">{fmt(p.profit)}</TableCell>
-                <TableCell className="text-right">
-                  <div className="flex items-center justify-end gap-2">
-                    <div className="w-24 h-1.5 rounded-full bg-muted overflow-hidden">
-                      <div
-                        className="h-full bg-foreground"
-                        style={{ width: `${p.contribution}%` }}
-                      />
-                    </div>
-                    <span className="tabular-nums text-sm w-10">{p.contribution}%</span>
+      </section>
+
+      {/* Two-column: Activity + Insights */}
+      <section className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+        {/* Recent Activity */}
+        <div className="lg:col-span-2 rounded-xl border border-border bg-card shadow-sm p-5">
+          <SectionHeading title="Recent activity" subtitle="What's happened lately." compact />
+          <ol className="mt-4 relative border-l border-border ml-2 space-y-5">
+            {activity.map((a, i) => (
+              <li key={i} className="pl-5">
+                <span className="absolute -left-[7px] h-3.5 w-3.5 rounded-full bg-background border-2 border-foreground" />
+                <div className="flex items-start gap-3">
+                  <div className="h-7 w-7 rounded-md bg-muted grid place-items-center shrink-0">
+                    <a.icon className="h-3.5 w-3.5 text-foreground" />
                   </div>
-                </TableCell>
-              </TableRow>
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium leading-tight">{a.title}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1">
+                      <Clock className="h-3 w-3" />
+                      {a.time}
+                    </p>
+                  </div>
+                </div>
+              </li>
             ))}
-          </TableBody>
-        </Table>
-      </section>
-
-      {/* Alerts & Recommendations */}
-      <section className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="rounded-xl border border-border bg-card shadow-sm p-5 space-y-3">
-          <h2 className="text-sm font-semibold">Business alerts</h2>
-          <Alert
-            tone="warning"
-            icon={AlertTriangle}
-            title="High revenue concentration"
-            body="Laptop contributes 68% of total revenue."
-          />
-          <Alert
-            tone="info"
-            icon={Info}
-            title="Low contribution"
-            body="Keyboard contributes only 4% of revenue."
-          />
-          <Alert
-            tone="info"
-            icon={Info}
-            title="Low contribution"
-            body="Mouse contributes only 3% of revenue."
-          />
+          </ol>
         </div>
 
-        <div className="rounded-xl border border-border bg-card shadow-sm p-5 space-y-3">
-          <h2 className="text-sm font-semibold">Recommendations</h2>
-          <Recommendation body="Reduce dependency on Laptop sales by diversifying high-margin SKUs." />
-          <Recommendation body="Bundle Keyboard and Mouse with Laptop purchases to lift attach rate." />
-          <Recommendation body="Maintain current pricing strategy — profit margin exceeds 20%." />
+        {/* Business Insights */}
+        <div className="lg:col-span-3 space-y-4">
+          <SectionHeading
+            title="Business insights"
+            subtitle="AI-generated observations from your latest data."
+            compact
+          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {insights.map((ins) => (
+              <InsightCard key={ins.title} {...ins} />
+            ))}
+            <div className="rounded-xl border border-dashed border-border bg-muted/20 p-5 grid place-items-center text-center">
+              <div>
+                <Sparkles className="h-5 w-5 mx-auto text-muted-foreground" />
+                <p className="text-xs text-muted-foreground mt-2">
+                  More insights unlock as you upload more sales data.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Upload */}
-      <section className="rounded-xl border border-border bg-card shadow-sm p-5 space-y-3">
-        <div>
-          <h2 className="text-sm font-semibold">Import sales data</h2>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Upload a CSV or Excel file to refresh your dashboard.
-          </p>
+      {/* Upcoming Festivals */}
+      <section className="space-y-4">
+        <SectionHeading
+          title="Upcoming festivals"
+          subtitle="Plan AI-generated campaigns ahead of key dates."
+        />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {festivals.map((f) => (
+            <FestivalCard key={f.name} {...f} />
+          ))}
         </div>
-        <CsvUpload />
       </section>
     </div>
   );
 }
 
-function Kpi({
-  label,
-  value,
-  icon: Icon,
-  delta,
-  up,
-}: {
-  label: string;
-  value: string;
-  icon: React.ComponentType<{ className?: string }>;
-  delta: string;
-  up?: boolean;
-}) {
-  return (
-    <div className="rounded-xl border border-border bg-card shadow-sm p-5">
-      <div className="flex items-center justify-between">
-        <p className="text-sm text-muted-foreground">{label}</p>
-        <div className="h-8 w-8 rounded-lg bg-muted grid place-items-center">
-          <Icon className="h-4 w-4 text-foreground" />
-        </div>
-      </div>
-      <p className="text-2xl font-semibold tracking-tight mt-3 tabular-nums">{value}</p>
-      <div
-        className={
-          "flex items-center gap-1 text-xs mt-1.5 " +
-          (up ? "text-emerald-600" : "text-muted-foreground")
-        }
-      >
-        {up ? <TrendingUp className="h-3.5 w-3.5" /> : <TrendingDown className="h-3.5 w-3.5" />}
-        <span>{delta} vs last period</span>
-      </div>
-    </div>
-  );
-}
-
-function ChartCard({
+function SectionHeading({
   title,
   subtitle,
-  children,
+  compact,
 }: {
   title: string;
-  subtitle: string;
-  children: React.ReactNode;
+  subtitle?: string;
+  compact?: boolean;
 }) {
   return (
-    <div className="rounded-xl border border-border bg-card shadow-sm p-5">
-      <div className="mb-4">
-        <h3 className="text-sm font-semibold">{title}</h3>
-        <p className="text-xs text-muted-foreground mt-0.5">{subtitle}</p>
-      </div>
-      <div className="h-64">{children}</div>
+    <div>
+      <h2 className={compact ? "text-sm font-semibold" : "text-lg font-semibold tracking-tight"}>
+        {title}
+      </h2>
+      {subtitle && <p className="text-xs text-muted-foreground mt-0.5">{subtitle}</p>}
     </div>
   );
 }
 
-function RevenueChart({ data }: { data: { name: string; value: number }[] }) {
-  const colors = ["#0F172A", "#334155", "#64748B", "#94A3B8"];
-  return (
-    <ResponsiveContainer width="100%" height="100%">
-      <BarChart data={data} margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
-        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
-        <XAxis dataKey="name" tick={{ fontSize: 12, fill: "#64748B" }} axisLine={false} tickLine={false} />
-        <YAxis
-          tick={{ fontSize: 12, fill: "#64748B" }}
-          axisLine={false}
-          tickLine={false}
-          tickFormatter={(v) => "₹" + (v / 1000).toFixed(0) + "k"}
-        />
-        <Tooltip
-          cursor={{ fill: "rgba(15,23,42,0.04)" }}
-          contentStyle={{
-            borderRadius: 8,
-            border: "1px solid #E5E7EB",
-            fontSize: 12,
-            boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
-          }}
-          formatter={(v) => fmt(Number(v))}
-        />
-        <Bar dataKey="value" radius={[6, 6, 0, 0]}>
-          {data.map((_, i) => (
-            <Cell key={i} fill={colors[i % colors.length]} />
-          ))}
-        </Bar>
-      </BarChart>
-    </ResponsiveContainer>
-  );
-}
-
-function Alert({
-  tone,
+function InsightCard({
   icon: Icon,
   title,
   body,
+  tone,
 }: {
-  tone: "warning" | "info";
   icon: React.ComponentType<{ className?: string }>;
   title: string;
   body: string;
+  tone: "warning" | "success" | "info";
 }) {
-  const toneClasses =
-    tone === "warning"
-      ? "bg-amber-50 text-amber-700 border-amber-200"
-      : "bg-sky-50 text-sky-700 border-sky-200";
+  const toneMap = {
+    warning: "bg-amber-50 text-amber-700 border-amber-200",
+    success: "bg-emerald-50 text-emerald-700 border-emerald-200",
+    info: "bg-sky-50 text-sky-700 border-sky-200",
+  } as const;
   return (
-    <div className="flex items-start gap-3 p-3 rounded-lg border border-border bg-muted/30">
-      <div className={"h-8 w-8 rounded-md grid place-items-center border " + toneClasses}>
+    <div className="rounded-xl border border-border bg-card shadow-sm p-5">
+      <div className={"h-9 w-9 rounded-md grid place-items-center border " + toneMap[tone]}>
         <Icon className="h-4 w-4" />
       </div>
-      <div className="flex-1">
-        <p className="text-sm font-medium">{title}</p>
-        <p className="text-xs text-muted-foreground mt-0.5">{body}</p>
-      </div>
+      <p className="text-sm font-semibold mt-3">{title}</p>
+      <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{body}</p>
     </div>
   );
 }
 
-function Recommendation({ body }: { body: string }) {
+function FestivalCard({
+  name,
+  month,
+  day,
+  readiness,
+}: {
+  name: string;
+  month: number;
+  day: number;
+  readiness: "ready" | "draft" | "not-started";
+}) {
+  const days = daysUntil(month, day);
+  const readinessMap = {
+    ready: {
+      label: "Campaign ready",
+      classes: "bg-emerald-50 text-emerald-700 border-emerald-200",
+      icon: CheckCircle2,
+    },
+    draft: {
+      label: "Draft in progress",
+      classes: "bg-amber-50 text-amber-700 border-amber-200",
+      icon: Clock,
+    },
+    "not-started": {
+      label: "Not started",
+      classes: "bg-muted text-muted-foreground border-border",
+      icon: Clock,
+    },
+  } as const;
+  const r = readinessMap[readiness];
+
   return (
-    <div className="flex items-start gap-3 p-3 rounded-lg border border-border bg-muted/30">
-      <div className="h-8 w-8 rounded-md grid place-items-center bg-emerald-50 text-emerald-700 border border-emerald-200">
-        <Lightbulb className="h-4 w-4" />
+    <div className="rounded-xl border border-border bg-card shadow-sm p-5 flex flex-col">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h3 className="text-base font-semibold tracking-tight">{name}</h3>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            {days === 0 ? "Today" : `In ${days} day${days === 1 ? "" : "s"}`}
+          </p>
+        </div>
+        <div className="text-right">
+          <p className="text-2xl font-semibold tabular-nums leading-none">{days}</p>
+          <p className="text-[10px] uppercase tracking-wide text-muted-foreground mt-1">days left</p>
+        </div>
       </div>
-      <p className="text-sm text-foreground/90 flex-1">{body}</p>
+
+      <div
+        className={
+          "mt-4 inline-flex items-center gap-1.5 self-start text-xs px-2 py-1 rounded-md border " +
+          r.classes
+        }
+      >
+        <r.icon className="h-3.5 w-3.5" />
+        {r.label}
+      </div>
+
+      <Button asChild size="sm" className="mt-4 w-full">
+        <Link to="/dashboard/campaign-studio">Generate Campaign</Link>
+      </Button>
     </div>
   );
 }
